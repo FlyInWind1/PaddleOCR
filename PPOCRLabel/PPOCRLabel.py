@@ -100,6 +100,7 @@ class MainWindow(QMainWindow):
                              cls=True,
                              use_gpu=gpu,
                              lang=lang,
+                             det_model_dir='/mnt/d/python/PaddleOCR/output/shuyang/det_r50_vd',
                              show_log=False)
         self.table_ocr = PPStructure(use_pdserving=False,
                                      use_gpu=gpu,
@@ -1098,7 +1099,7 @@ class MainWindow(QMainWindow):
         shape.paintLabel = self.displayLabelOption.isChecked()
         shape.paintIdx = self.displayIndexOption.isChecked()
 
-        item = HashableQListWidgetItem(shape.label)
+        item = HashableQListWidgetItem(str(shape.label))
         # current difficult checkbox is disenble
         # item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
         # item.setCheckState(Qt.Unchecked) if shape.difficult else item.setCheckState(Qt.Checked)
@@ -1151,6 +1152,9 @@ class MainWindow(QMainWindow):
         shape_index = 0
         for label, points, line_color, key_cls, difficult in shapes:
             shape = Shape(label=label, line_color=line_color, key_cls=key_cls)
+            print(points)
+            if len(points) == 2:
+                points = points[0]
             for x, y in points:
 
                 # Ensure the labels are within the bounds of the image. If not, fix them.
