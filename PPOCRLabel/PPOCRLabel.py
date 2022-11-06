@@ -241,7 +241,7 @@ class MainWindow(QMainWindow):
         labelIndexListlBox.addWidget(self.indexListDock, 1)
         # no margin between two boxes
         labelIndexListlBox.setSpacing(0)
-        
+
         # Create and add a widget for showing current label items
         self.labelList = EditInList()
         labelListContainer = QWidget()
@@ -256,9 +256,9 @@ class MainWindow(QMainWindow):
         self.labelListDock.setWidget(self.labelList)
         self.labelListDock.setFeatures(QDockWidget.NoDockWidgetFeatures)
         labelIndexListlBox.addWidget(self.labelListDock, 10) # label list is wider than index list
-        
+
         # enable labelList drag_drop to adjust bbox order
-        # 设置选择模式为单选  
+        # 设置选择模式为单选
         self.labelList.setSelectionMode(QAbstractItemView.SingleSelection)
         # 启用拖拽
         self.labelList.setDragEnabled(True)
@@ -267,7 +267,7 @@ class MainWindow(QMainWindow):
         # 设置显示将要被放置的位置
         self.labelList.setDropIndicatorShown(True)
         # 设置拖放模式为移动项目，如果不设置，默认为复制项目
-        self.labelList.setDragDropMode(QAbstractItemView.InternalMove) 
+        self.labelList.setDragDropMode(QAbstractItemView.InternalMove)
         # 触发放置
         self.labelList.model().rowsMoved.connect(self.drag_drop_happened)
 
@@ -503,7 +503,7 @@ class MainWindow(QMainWindow):
 
         createpoly = action(getStr('creatPolygon'), self.createPolygon,
                             'q', 'new', getStr('creatPolygon'), enabled=False)
-        
+
         tableRec = action(getStr('TableRecognition'), self.TableRecognition,
                         '', 'Auto', getStr('TableRecognition'), enabled=False)
 
@@ -515,7 +515,7 @@ class MainWindow(QMainWindow):
 
         saveLabel = action(getStr('saveLabel'), self.saveLabelFile,  #
                            'Ctrl+S', 'save', getStr('saveLabel'), enabled=False)
-        
+
         exportJSON = action(getStr('exportJSON'), self.exportJSON,
                             '', 'save', getStr('exportJSON'), enabled=False)
 
@@ -1047,7 +1047,7 @@ class MainWindow(QMainWindow):
 
     def CanvasSizeChange(self):
         if len(self.mImgList) > 0 and self.imageSlider.hasFocus():
-            self.zoomWidget.setValue(self.imageSlider.value())
+            self.zoomWidget.setValue(int(self.imageSlider.value()))
 
     def shapeSelectionChanged(self, selected_shapes):
         self._noSelectionSlot = True
@@ -1066,7 +1066,7 @@ class MainWindow(QMainWindow):
         self.labelList.scrollToItem(self.currentItem())  # QAbstractItemView.EnsureVisible
         # map current label item to index item and select it
         index = self.labelList.indexFromItem(self.currentItem()).row()
-        self.indexList.scrollToItem(self.indexList.item(index)) 
+        self.indexList.scrollToItem(self.indexList.item(index))
         self.BoxList.scrollToItem(self.currentBox())
 
         if self.kie_mode:
@@ -1259,8 +1259,8 @@ class MainWindow(QMainWindow):
         # self.shapeSelectionChanged(True)
 
     def move_scrollbar(self, value):
-        self.labelListBar.setValue(value)
-        self.indexListBar.setValue(value)
+        self.labelListBar.setValue(int(value))
+        self.indexListBar.setValue(int(value))
 
     def labelSelectionChanged(self):
         if self._noSelectionSlot:
@@ -1320,7 +1320,7 @@ class MainWindow(QMainWindow):
                 # self.actions.save.setEnabled(True)
         else:
             print('enter labelItemChanged slot with unhashable item: ', item, item.text())
-    
+
     def drag_drop_happened(self):
         '''
         label list drag drop signal slot
@@ -1334,14 +1334,14 @@ class MainWindow(QMainWindow):
         assert len(self.canvas.selectedShapes) > 0
         for shape in self.canvas.selectedShapes:
             selectedShapeIndex = shape.idx
-        
+
         if newIndex == selectedShapeIndex:
             return
 
         # move corresponding item in shape list
         shape = self.canvas.shapes.pop(selectedShapeIndex)
         self.canvas.shapes.insert(newIndex, shape)
-            
+
         # update bbox index
         self.canvas.updateShapeIndex()
 
@@ -1422,17 +1422,17 @@ class MainWindow(QMainWindow):
     def scrollRequest(self, delta, orientation):
         units = - delta / (8 * 15)
         bar = self.scrollBars[orientation]
-        bar.setValue(bar.value() + bar.singleStep() * units)
+        bar.setValue(int(bar.value() + bar.singleStep() * units))
 
     def setZoom(self, value):
         self.actions.fitWidth.setChecked(False)
         self.actions.fitWindow.setChecked(False)
         self.zoomMode = self.MANUAL_ZOOM
-        self.zoomWidget.setValue(value)
+        self.zoomWidget.setValue(int(value))
 
     def addZoom(self, increment=10):
         self.setZoom(self.zoomWidget.value() + increment)
-        self.imageSlider.setValue(self.zoomWidget.value() + increment)  # set zoom slider value
+        self.imageSlider.setValue(int(self.zoomWidget.value() + increment))  # set zoom slider value
 
     def zoomRequest(self, delta):
         # get the current scrollbar positions
@@ -1483,8 +1483,8 @@ class MainWindow(QMainWindow):
         new_h_bar_value = h_bar.value() + move_x * d_h_bar_max
         new_v_bar_value = v_bar.value() + move_y * d_v_bar_max
 
-        h_bar.setValue(new_h_bar_value)
-        v_bar.setValue(new_v_bar_value)
+        h_bar.setValue(int(new_h_bar_value))
+        v_bar.setValue(int(new_v_bar_value))
 
     def setFitWindow(self, value=True):
         if value:
@@ -1642,8 +1642,8 @@ class MainWindow(QMainWindow):
 
     def adjustScale(self, initial=False):
         value = self.scalers[self.FIT_WINDOW if initial else self.zoomMode]()
-        self.zoomWidget.setValue(int(100 * value))
-        self.imageSlider.setValue(self.zoomWidget.value())  # set zoom slider value
+        self.zoomWidget.setValue(int(int(100 * value)))
+        self.imageSlider.setValue(int(self.zoomWidget.value()))  # set zoom slider value
 
     def scaleFitWindow(self):
         """Figure out the size of the pixmap in order to fit the main widget."""
@@ -1933,7 +1933,7 @@ class MainWindow(QMainWindow):
                     self.openNextImg()
                 self.actions.saveRec.setEnabled(True)
                 self.actions.saveLabel.setEnabled(True)
-                self.actions.exportJSON.setEnabled(True) 
+                self.actions.exportJSON.setEnabled(True)
 
         elif mode == 'Auto':
             if annotationFilePath and self.saveLabels(annotationFilePath, mode=mode):
@@ -2298,13 +2298,13 @@ class MainWindow(QMainWindow):
         filename, _ = os.path.splitext(os.path.basename(self.filePath))
 
         excel_path = TableRec_excel_dir + '{}.xlsx'.format(filename)
-        
+
         if res is None:
             msg = 'Can not recognise the table in ' + self.filePath + '. Please change manually'
             QMessageBox.information(self, "Information", msg)
             to_excel('', excel_path) # create an empty excel
             return
-        
+
         # save res
         # ONLY SUPPORT ONE TABLE in one image
         hasTable = False
@@ -2341,7 +2341,7 @@ class MainWindow(QMainWindow):
                     shape = Shape(label=rec_text, line_color=DEFAULT_LINE_COLOR, key_cls=None)
                     for point in rext_bbox:
                         x, y = point
-                        # Ensure the labels are within the bounds of the image. 
+                        # Ensure the labels are within the bounds of the image.
                         # If not, fix them.
                         x, y, snapped = self.canvas.snapPointToCanvas(x, y)
                         shape.addPoint(QPointF(x, y))
@@ -2354,14 +2354,14 @@ class MainWindow(QMainWindow):
                     shapes.append(shape)
                 self.setDirty()
                 self.canvas.loadShapes(shapes)
-                
+
                 # save HTML result to excel
                 try:
                     to_excel(region['res']['html'], excel_path)
                 except:
                     print('Can not save excel file, maybe Permission denied (.xlsx is being occupied)')
                 break
-        
+
         if not hasTable:
             msg = 'Can not recognise the table in ' + self.filePath + '. Please change manually'
             QMessageBox.information(self, "Information", msg)
@@ -2389,7 +2389,7 @@ class MainWindow(QMainWindow):
                     ".xlsx is not existed")
         else:
             os.system('open ' + os.path.normpath(excel_path))
-                
+
         print('time cost: ', time.time() - start)
 
     def cellreRecognition(self):
@@ -2471,7 +2471,7 @@ class MainWindow(QMainWindow):
                         labeldict[file] = eval(label)
                     else:
                         labeldict[file] = []
-        
+
         # read table recognition output
         TableRec_excel_dir = os.path.join(
             self.lastOpenDir, 'tableRec_excel_output')
@@ -2503,7 +2503,7 @@ class MainWindow(QMainWindow):
             for anno in labeldict[image_path]:
                 tokens = list(anno['transcription'])
                 cells.append({
-                    'tokens': tokens, 
+                    'tokens': tokens,
                     'bbox': anno['points']
                     })
 
@@ -2511,11 +2511,11 @@ class MainWindow(QMainWindow):
             html = {
                 'structure': {
                     'tokens': token_list
-                    }, 
+                    },
                 'cells': cells
                 }
             d = {
-                'filename': os.path.basename(image_path), 
+                'filename': os.path.basename(image_path),
                 'html': html
                 }
             # 重构HTML
@@ -2523,7 +2523,7 @@ class MainWindow(QMainWindow):
             fid.write('{}\n'.format(
                 json.dumps(
                     d, ensure_ascii=False)))
-                    
+
         # convert to PP-Structure label format
         fid.close()
         msg = 'JSON sucessfully saved in {}/gt.txt'.format(self.lastOpenDir)
@@ -2715,7 +2715,7 @@ class MainWindow(QMainWindow):
 
             self._update_shape_color(shape)
             self.keyDialog.addLabelHistory(key_text)
-            
+
         # save changed shape
         self.setDirty()
 
@@ -2740,7 +2740,7 @@ class MainWindow(QMainWindow):
     def lockSelectedShape(self):
         """lock the selected shapes.
 
-        Add self.selectedShapes to lock self.canvas.lockedShapes, 
+        Add self.selectedShapes to lock self.canvas.lockedShapes,
         which holds the ratio of the four coordinates of the locked shapes
         to the width and height of the image
         """

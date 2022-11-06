@@ -79,7 +79,7 @@ class Canvas(QWidget):
         #initialisation for panning
         self.pan_initial_pos = QPoint()
 
-        #lockedshapes related 
+        #lockedshapes related
         self.lockedShapes = []
         self.isInTheSameImage = False
 
@@ -593,7 +593,7 @@ class Canvas(QWidget):
             p.setPen(self.drawingRectColor)
             brush = QBrush(Qt.BDiagPattern)
             p.setBrush(brush)
-            p.drawRect(leftTop.x(), leftTop.y(), rectWidth, rectHeight)
+            p.drawRect(int(leftTop.x()), int(leftTop.y()), int(rectWidth), int(rectHeight))
 
 
         # ADD：
@@ -630,7 +630,7 @@ class Canvas(QWidget):
             fontszie = int(max(h, w) / 48)
             for s in self.shapes:
                 s.fontsize = fontszie
-        
+
         p.end()
 
     def fillDrawing(self):
@@ -664,7 +664,7 @@ class Canvas(QWidget):
 
         self.current.close()
         self.current.idx = len(self.shapes) # add current box index
-        self.shapes.append(self.current) 
+        self.shapes.append(self.current)
         self.current = None
         self.setHiding(False)
         self.newShape.emit()
@@ -899,7 +899,7 @@ class Canvas(QWidget):
             shape.selected = False
         self.updateShapeIndex()
         self.repaint()
-    
+
     @property
     def isShapeRestorable(self):
         if len(self.shapesBackups) < 2:
